@@ -1,0 +1,118 @@
+version: "3.1"
+services:
+  mongo:
+    image: mongo:4.0.6-xenial
+    container_name: mongo
+    command: --smallfiles
+    restart: always
+    volumes:
+      - "./mongo_data:/var/lib/mongodb"
+    network_mode: "bridge"
+    ports:
+      - "27017:27017"
+    environment:
+      TZ: "Asia/Chongqing"
+      MONGO_INITDB_ROOT_USERNAME: "root"
+      MONGO_INITDB_ROOT_PASSWORD: "mongopasswd"
+
+  redis:
+    image: redis:5.0.3-alpine
+    container_name: redis
+    restart: always
+    volumes:
+      - "./redis_data:/data"
+    network_mode: "bridge"
+    ports:
+      - "6379:6379"
+
+  mysql:
+    image: mysql:5.7.25
+    container_name: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    volumes:
+      - "./mysql_data:/var/lib/mysql"
+    network_mode: "bridge"
+    ports:
+      - "3306:3306"
+    environment:
+      TZ: "Asia/Chongqing"
+      MYSQL_ROOT_PASSWORD: "mysqlpasswd"
+
+  zookeeper:
+    image: zookeeper:3.4.13
+    container_name: zookeeper
+    restart: always
+    network_mode: "bridge"
+    ports:
+      - "2181:2181"
+      - "2888:2888"
+      - "3888:3888"
+
+  prometheus:
+    image: prom/prometheus:v2.8.0
+    container_name: prometheus
+    restart: always
+    network_mode: "bridge"
+    ports:
+      - "9090:9090"
+    volumes:
+      - "./prom/prometheus.yml:/etc/prometheus/prometheus.yml"
+
+  grafana:
+    image: grafana/grafana:6.0.2
+    container_name: grafana
+    restart: always
+    volumes:
+      - "./gf_data:/var/lib/grafana"
+    network_mode: "bridge"
+    ports:
+      - "3000:3000"
+
+  elasticsearch:
+    image: elasticsearch:6.6.2
+    container_name: elasticsearch
+    restart: always
+    volumes:
+      - "./es_data:/usr/share/elasticsearch/data"
+    network_mode: "bridge"
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - "discovery.type=single-node"
+#
+#  rmqnamesrv:
+#    image: rocketmqinc/rocketmq:latest
+#    container_name: rmqnamesrv
+#    restart: always
+#    volumes:
+#      - "./mq_data/namesrv/logs:/root/logs"
+#      - "./mq_data/namesrv/store:/root/store"
+#    network_mode: "bridge"
+#    ports:
+#      - "9876:9876"
+#
+#  rmqbroker:
+#    image: rocketmqinc/rocketmq:latest
+#    container_name: rmqbroker
+#    restart: always
+#    volumes:
+#      - "./mq_data/broker/logs:/root/logs"
+#      - "./mq_data/broker/store:/root/store"
+#    network_mode: "bridge"
+#    ports:
+#      - "10909:10909"
+#      - "10911:10911"
+#    environment:
+#      - "NAMESRV_ADDR=docker.for.mac.localhost::9876"
+#
+#  rmqconsole:
+#    image: styletang/rocketmq-console-ng:latest
+#    container_name: rmqconsole
+#    restart: always
+#    network_mode: "bridge"
+#    ports:
+#      - "12581:8080"
+#    environment:
+#      - "JAVA_OPTS=-Drocketmq.namesrv.addr=docker.for.mac.localhost::9876 -Dcom.rocketmq.sendMessageWithVIPChannel=false"

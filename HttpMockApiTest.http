@@ -1,0 +1,71 @@
+# For a quick start check out our HTTP Requests collection (Tools|HTTP Client|Open HTTP Requests Collection).
+#
+# Following HTTP Request Live Templates are available:
+# * 'gtrp' and 'gtr' create a GET request with or without query parameters;
+# * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
+# * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
+
+
+POST http://localhost:8080/__admin/api
+Content-Type: application/json
+
+{
+  "path": "/mock/demo/http/api",
+  "actions": [
+    {
+      "type": "delay",
+      "name": "delay",
+      "duration": 700
+    }
+  ],
+  "contentType": "application/json",
+  "response": "{\"l1\":{\"l1_1\":[\"l1_1_1\",\"l1_1_2\"],\"l1_2\":{\"l1_2_1\":121}},\"l2\":{\"l2_1\":null,\"l2_2\":true,\"l2_3\":{}}}"
+}
+
+###
+POST http://localhost:8080/__admin/api
+Content-Type: application/json
+
+{
+  "path": "/mock/demo/http/api",
+  "actions": [
+    {
+      "type": "forward",
+      "name": "forward",
+      "target": "https://www.baidu.com/abcd"
+    }
+  ],
+  "contentType": "application/json; charset=utf-8",
+  "response": "{\"l1\":{\"l1_1\":[\"l1_1_1\",\"l1_1_2\"],\"l1_2\":{\"l1_2_1\":121}},\"l2\":{\"l2_1\":null,\"l2_2\":true,\"l2_3\":{}}}"
+}
+
+###
+POST http://localhost:8080/__admin/api
+Content-Type: application/json
+
+{
+  "path": "/mock/demo/http/api",
+  "method": "post",
+  "actions": [
+    {
+      "type": "forward",
+      "name": "forward",
+      "target": "https://www.baidu.com/abcd"
+    },
+    {
+      "type": "delay",
+      "name": "delay",
+      "duration": 700
+    }
+  ],
+  "contentType": "application/json; charset=utf-8",
+  "response": "{\"l1\":{\"l1_1\":[\"l1_1_1\",\"l1_1_2\"],\"l1_2\":{\"l1_2_1\":121}},\"l2\":{\"l2_1\":null,\"l2_2\":true,\"l2_3\":{}}}"
+}
+
+###
+POST http://localhost:8080/mock/demo/http/api
+Content-Type: application/x-www-form-urlencoded
+
+id=99&content=new-element
+
+###
