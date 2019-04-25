@@ -1,27 +1,29 @@
 package com.zxytech.mock.bootmockserver.protocols.http.action;
 
-import com.google.common.base.CaseFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
-@Component
+import java.util.Arrays;
+import java.util.Map;
+
 public class HandlerContext {
   private static final Logger logger = LoggerFactory.getLogger(HandlerContext.class);
-  private static final String HANDLER_PACKAGE =
-      HandlerContext.class.getPackage().getName() + ".handler.";
+  private final Map<String, HttpMockActionHandler> handlerMap;
 
-  public HttpMockActionHandler getInstance(String actionType) throws Exception {
-    String handler =
-        CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, actionType + "_handler");
-    logger.info(handler);
+  public HandlerContext(Map<String, HttpMockActionHandler> handlerMap) {
+    this.handlerMap = handlerMap;
+  }
 
-    Class<?> actionHandlerClass = Class.forName(HANDLER_PACKAGE + handler);
-    if (actionHandlerClass != null) {
-      logger.info("find action handler: {}", actionHandlerClass);
-      return (HttpMockActionHandler) actionHandlerClass.newInstance();
+  public HttpMockActionHandler getInstance(String actionType) {
+    logger.info("input action name: ", actionType);
+    HttpMockActionHandler handler = handlerMap.get(actionType);
+    if (handler != null) {
+      return handler;
     }
 
-    throw new ClassNotFoundException("input action name invalid");
+    throw new IllegalArgumentException(
+        String.format(
+            "Invalid action: %s, there are only %s allowed.",
+            actionType, Arrays.toString(handlerMap.keySet().toArray())));
   }
 }

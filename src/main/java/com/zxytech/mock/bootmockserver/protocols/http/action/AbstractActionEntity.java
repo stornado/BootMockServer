@@ -14,5 +14,4 @@ import lombok.NoArgsConstructor;
 })
 public abstract class AbstractActionEntity {
   protected String name;
-  protected String description;
 }

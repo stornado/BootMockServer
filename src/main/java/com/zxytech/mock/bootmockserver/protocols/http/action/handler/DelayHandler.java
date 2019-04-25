@@ -6,13 +6,11 @@ import com.zxytech.mock.bootmockserver.protocols.http.action.HttpMockActionHandl
 import com.zxytech.mock.bootmockserver.protocols.http.action.HttpMockActionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-@Service
 @HttpMockActionType("delay")
 public class DelayHandler implements HttpMockActionHandler {
   private static final Logger logger = LoggerFactory.getLogger(DelayHandler.class);

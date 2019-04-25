@@ -20,8 +20,14 @@ import java.util.Optional;
 public class HttpMockFilter implements Filter {
   public static final Logger logger = LoggerFactory.getLogger(HttpMockFilter.class);
 
-  @Autowired HttpMockApiRepository apiRepository;
-  @Autowired HandlerContext handlerContext;
+  HttpMockApiRepository apiRepository;
+  HandlerContext handlerContext;
+
+  @Autowired
+  public HttpMockFilter(HttpMockApiRepository apiRepository, HandlerContext handlerContext) {
+    this.apiRepository = apiRepository;
+    this.handlerContext = handlerContext;
+  }
 
   @Override
   public void doFilter(
