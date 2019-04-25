@@ -25,10 +25,10 @@ public class HandlerProcessor implements BeanFactoryPostProcessor {
     provider.addIncludeFilter(new AnnotationTypeFilter(HttpMockActionType.class));
     provider.addIncludeFilter(new AssignableTypeFilter(HttpMockActionHandler.class));
     Set<BeanDefinition> beanDefinitionSet = provider.findCandidateComponents(HANDLER_PACKAGE);
-      Map<String, HttpMockActionHandler> handlerMap = new HashMap<>();
-      for(BeanDefinition beanDefinition: beanDefinitionSet) {
-//          handlerMap.put(beanDefinition.getBeanClassName(), beanDefinition.)
-//          beanDefinition.getBeanClassName().
-      }
+    Map<String, HttpMockActionHandler> handlerMap = new HashMap<>();
+    for (BeanDefinition beanDefinition : beanDefinitionSet) {
+      //          handlerMap.put(beanDefinition.getBeanClassName(), beanDefinition.)
+      //          beanDefinition.getBeanClassName().
+    }
   }
 }

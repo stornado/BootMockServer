@@ -14,7 +14,8 @@ public class MediaTypeDeserializer extends JsonDeserializer<ContentTypeEnum> {
 
   @Override
   public ContentTypeEnum deserialize(JsonParser p, DeserializationContext ctxt)
-      throws IOException, JsonProcessingException {
-    return ContentTypeEnum.valueOf(MediaType.parseMediaType(p.getValueAsString()).getSubtype().toUpperCase());
+      throws IOException {
+    return ContentTypeEnum.valueOf(
+        MediaType.parseMediaType(p.getValueAsString()).getSubtype().toUpperCase());
   }
 }

@@ -8,8 +8,9 @@ import org.springframework.http.HttpMethod;
 import java.io.IOException;
 
 public class HttpMethodSerializer extends JsonSerializer<HttpMethod> {
-    @Override
-    public void serialize(HttpMethod method, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-            gen.writeString(method.name());
-    }
+  @Override
+  public void serialize(HttpMethod method, JsonGenerator gen, SerializerProvider serializers)
+      throws IOException {
+    gen.writeString(method.name());
+  }
 }
