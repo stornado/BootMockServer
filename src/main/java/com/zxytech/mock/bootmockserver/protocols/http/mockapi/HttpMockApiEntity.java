@@ -10,7 +10,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -33,7 +32,7 @@ public class HttpMockApiEntity extends AbstractMockEntity {
   @NotNull
   @JsonDeserialize(using = MediaTypeDeserializer.class)
   @JsonSerialize(using = MediaTypeSerializer.class)
-  MediaType contentType;
+  ContentTypeEnum contentType;
 
   @NotEmpty String response;
 

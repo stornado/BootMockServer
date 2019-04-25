@@ -10,10 +10,11 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 @Component
-public class MediaTypeDeserializer extends JsonDeserializer<MediaType> {
+public class MediaTypeDeserializer extends JsonDeserializer<ContentTypeEnum> {
+
   @Override
-  public MediaType deserialize(JsonParser p, DeserializationContext ctxt)
+  public ContentTypeEnum deserialize(JsonParser p, DeserializationContext ctxt)
       throws IOException, JsonProcessingException {
-    return MediaType.parseMediaType(p.getValueAsString());
+    return ContentTypeEnum.valueOf(MediaType.parseMediaType(p.getValueAsString()).getSubtype().toUpperCase());
   }
 }
