@@ -4,9 +4,9 @@ import org.springframework.http.MediaType;
 
 public enum ContentTypeEnum {
   TEXT(MediaType.TEXT_PLAIN),
-  JSON(MediaType.APPLICATION_JSON_UTF8),
+  JSON(MediaType.APPLICATION_JSON),
   HTML(MediaType.TEXT_HTML),
-  XML(MediaType.TEXT_XML);
+  XML(MediaType.APPLICATION_XML);
 
   MediaType mediaType;
 

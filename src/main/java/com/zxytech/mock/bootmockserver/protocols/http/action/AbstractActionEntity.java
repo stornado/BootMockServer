@@ -2,6 +2,7 @@ package com.zxytech.mock.bootmockserver.protocols.http.action;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,5 +14,6 @@ import lombok.NoArgsConstructor;
   @JsonSubTypes.Type(value = ForwardActionEntity.class, name = "forward")
 })
 public abstract class AbstractActionEntity {
+  @ApiModelProperty("动作名称")
   protected String name;
 }

@@ -1,17 +1,20 @@
-package com.zxytech.mock.bootmockserver.admin;
+package com.zxytech.mock.bootmockserver.protocols.http.admin;
 
 import com.zxytech.mock.bootmockserver.protocols.http.mockapi.HttpMockApiEntity;
 import com.zxytech.mock.bootmockserver.protocols.http.mockapi.HttpMockApiRepository;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/__admin")
-public class AdminController {
+@RequestMapping("/__admin/http")
+@Api(value = "HttpAdminController", description = "HTTP Mock 配置管理接口")
+public class HttpAdminController {
 
   @Autowired HttpMockApiRepository apiRepository;
 
@@ -27,12 +30,19 @@ public class AdminController {
   }
 
   @PostMapping("/api")
-  public HttpMockApiEntity addHttpMockApi(@RequestBody HttpMockApiEntity httpMockApiEntity) {
+  public HttpMockApiEntity addHttpMockApi(@Valid @RequestBody HttpMockApiEntity httpMockApiEntity) {
     return apiRepository.save(httpMockApiEntity);
   }
 
   @DeleteMapping("/api/{id}")
   public void deleteHttpMockApi(@PathVariable String id) {
     apiRepository.deleteById(id);
+  }
+
+  @PutMapping("/api/{id}")
+  public HttpMockApiEntity updateHttpMockApi(
+      @PathVariable String id, @Valid @RequestBody HttpMockApiEntity apiEntity) {
+    apiEntity.setId(id);
+    return apiRepository.save(apiEntity);
   }
 }

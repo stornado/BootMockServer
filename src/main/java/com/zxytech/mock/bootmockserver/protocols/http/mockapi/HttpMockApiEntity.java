@@ -4,9 +4,10 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.zxytech.mock.bootmockserver.protocols.AbstractMockEntity;
 import com.zxytech.mock.bootmockserver.protocols.http.action.AbstractActionEntity;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.http.HttpMethod;
@@ -19,9 +20,15 @@ import java.util.List;
 @Document("http_mock_apis")
 @Data
 @NoArgsConstructor
+@ApiModel("HTTP Mock 接口实体")
 public class HttpMockApiEntity extends AbstractMockEntity {
-  @Id String id;
-  @NotBlank @Indexed String path;
+
+  @NotBlank
+  @Indexed
+  @ApiModelProperty("HTTP Mock URL 路径")
+  String path;
+
+  @ApiModelProperty("动作")
   List<AbstractActionEntity> actions;
 
   @NotNull
@@ -32,9 +39,12 @@ public class HttpMockApiEntity extends AbstractMockEntity {
   @NotNull
   @JsonDeserialize(using = MediaTypeDeserializer.class)
   @JsonSerialize(using = MediaTypeSerializer.class)
+  @ApiModelProperty("Mock 响应 Content-Type")
   ContentTypeEnum contentType;
 
-  @NotEmpty String response;
+  @NotEmpty
+  @ApiModelProperty("Mock 默认响应内容")
+  String response;
 
   @Override
   public String toString() {

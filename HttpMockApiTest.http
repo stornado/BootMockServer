@@ -6,7 +6,7 @@
 # * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
 
 
-POST http://localhost:8080/__admin/api
+POST http://localhost:8080/__admin/http/api
 Content-Type: application/json
 
 {
@@ -23,7 +23,7 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:8080/__admin/api
+POST http://localhost:8080/__admin/http/api
 Content-Type: application/json
 
 {
@@ -40,7 +40,7 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:8080/__admin/api
+POST http://localhost:8080/__admin/http/api
 Content-Type: application/json
 
 {
