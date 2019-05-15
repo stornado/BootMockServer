@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en"
+			layout:decorate="~{layouts/default_admin_layout}"
+			xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+			xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title th:text="#{mock.http.page.title}">HTTP Mock 接口配置</title>
+</head>
+<body>
+<div class="section no-pad-bot" id="index-banner" layout:fragment="custom_page_content">
+	<div class="container">
+		<h1 class="header green lighten-1" th:text="#{mock.http.page.content.title}">HTTP Mock</h1>
+		<div class="row">
+			<h5 class="header col s12 light" th:text="#{mock.http.page.content.description}">HTTP Mock 管理配置</h5>
+		</div>
+		<div class="row center">
+			<a class="waves-effect waves-circle waves-light btn-floating secondary-content" href="#!"
+				 th:href="@{/__admin/http/api/new/page}">
+				<i class="material-icons">add</i>
+			</a>
+			<table class="striped highlight responsive-table">
+				<thead>
+				<tr>
+					<th th:text="#{mock.http.table.header.path}">地址</th>
+					<th th:text="#{mock.http.table.header.method}">HTTP方法</th>
+					<th th:text="#{mock.http.table.header.actions}">动作</th>
+					<th th:text="#{mock.http.table.header.contentType}">响应类型</th>
+					<th th:text="#{mock.http.table.header.response}">默认响应</th>
+					<th th:text="#{mock.http.table.header.description}">备注</th>
+					<th th:text="#{mock.http.table.header.active}">状态</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr th:each="httpMockApi: ${httpMockApiList}">
+					<td><a href="" th:href="@{'/__admin/http/api/' + ${httpMockApi.id} + '/page'}"
+								 th:text="${httpMockApi.path}"></a>
+					</td>
+					<td th:text="${httpMockApi.method}"></td>
+					<td>
+						<span class="badge" th:each="action: ${httpMockApi.actions}" th:text="${action.name}"></span>
+					</td>
+					<td th:text="${httpMockApi.contentType.name()}"></td>
+					<td th:text="${httpMockApi.response}"></td>
+					<td th:text="${httpMockApi.description}"></td>
+					<td><a href=""
+								 th:class="${httpMockApi.active} ? 'btn btn-red waves-effect waves-red red' : 'btn btn-teal waves-effect waves-teal teal'"
+								 th:href="@{'/__admin/http/api/' + ${httpMockApi.id} + '/' + not ${httpMockApi.active}}"
+								 th:text="${httpMockApi.active} ? #{mock.api.disable} : #{mock.api.enable}"></a>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+
+	</div>
+</div>
+</body>
+</html>

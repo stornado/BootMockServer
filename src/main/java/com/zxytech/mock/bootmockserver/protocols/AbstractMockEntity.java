@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Data
@@ -12,14 +13,18 @@ public abstract class AbstractMockEntity {
 
   @NotNull
   @ApiModelProperty("Mock 有效状态(默认true)")
-  boolean active;
+  protected boolean active;
 
   @NotNull
-  @ApiModelProperty("Mock 接口备注")
-  String description;
+  @ApiModelProperty("接口备注")
+  protected String description;
 
-  Long createTime;
-  long updateTime;
+    @NotEmpty
+    @ApiModelProperty("Mock 默认响应内容")
+    protected String response;
+
+    protected Long createTime;
+    protected Long updateTime;
 
   protected AbstractMockEntity() {
     active = true;

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en"
+			layout:decorate="~{layouts/default_layout}"
+			xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+	<meta charset="UTF-8">
+	<title layout:title-pattern="$CONTENT_TITLE - $LAYOUT_TITLE">Boot Mock Server Admin</title>
+</head>
+<body>
+<section layout:fragment="custom_page_header">
+	<nav layout:insert="fragments/default_admin_header_fragment"></nav>
+</section>
+
+<script layout:fragment="custom_page_js" type="application/javascript">
+	(function ($) {
+		$(function () {
+
+			$('.sidenav').sidenav();
+
+		}); // end of document ready
+	})(jQuery); // end of jQuery name space
+</script>
+
+</body>
+</html>

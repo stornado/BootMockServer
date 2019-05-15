@@ -7,13 +7,13 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@ApiModel("转发")
-public class ForwardActionEntity extends AbstractActionEntity {
-  @ApiModelProperty("转发目标地址")
+@ApiModel("代理")
+public class ProxyActionEntity extends AbstractActionEntity {
+    @ApiModelProperty("目标URL")
   String target;
 
   @Override
   public String toString() {
-    return "ForwardActionEntity{" + "target='" + target + '\'' + ", name='" + name + '\'' + '}';
+      return "ProxyActionEntity{" + "target='" + target + '\'' + ", name='" + name + '\'' + '}';
   }
 }

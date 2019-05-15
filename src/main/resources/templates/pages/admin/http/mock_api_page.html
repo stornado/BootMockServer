@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en"
+			layout:decorator="layouts/default_admin_layout"
+			xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+			xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title th:text="#{mock.http.page.title}">HTTP Mock 接口配置</title>
+</head>
+<body>
+<div class="section no-pad-bot" layout:fragment="custom_page_content">
+	<div class="container">
+		<div class="row">
+			<h2 class="indigo-text center">HTTP Mock Api</h2>
+
+			<form action="" class="col m8 s12 offset-m2" method="post"
+						th:action="@{'/__admin/http/api/' + ${httpMockApi?.id} + '/page'}"
+						th:object="${httpMockApi}">
+				<div class="row">
+					<div class="input-field col s12">
+						<input id="httpPath" name="path" th:value="${httpMockApi?.path}" type="text">
+						<label for="httpPath" th:text="#{mock.http.table.header.path}">路径</label>
+					</div>
+
+					<div class="input-field col m4 s6">
+						<select id="httpMethod" name="method">
+							<option th:selected="${httpMockApi?.method?.matches('POST')}" value="POST">POST</option>
+							<option th:selected="${httpMockApi?.method?.matches('GET')}" value="GET">GET</option>
+						</select>
+						<label for="httpMethod" th:text="#{mock.http.table.header.method}">HTTP方法</label>
+					</div>
+					<div class="input-field col m4 s6">
+						<select id="httpContentType" name="contentType">
+							<option th:selected="${httpMockApi?.contentType?.name()} eq 'JSON'" value="JSON">JSON</option>
+							<option th:selected="${httpMockApi?.contentType?.name()} eq 'HTML'" value="HTML">HTML</option>
+							<option th:selected="${httpMockApi?.contentType?.name()} eq 'TEXT'" value="TEXT">TEXT</option>
+							<option th:selected="${httpMockApi?.contentType?.name()} eq 'XML'" value="XML">XML</option>
+						</select>
+						<label for="httpContentType" th:text="#{mock.http.table.header.contentType}">ContentType</label>
+					</div>
+					<div class="input-field col m4 s6">
+						<select id="httpActive" name="active">
+							<option th:selected="${httpMockApi?.active}" th:text="#{mock.api.enable}" value="true">启用</option>
+							<option th:selected="not ${httpMockApi?.active}" th:text="#{mock.api.disable}" value="false">禁用</option>
+						</select>
+						<label for="httpActive" th:text="#{mock.http.table.header.active}">是否启用</label>
+					</div>
+
+					<div class="input-field col s12">
+						<textarea class="materialize-textarea" id="httpResponse" name="response" th:text="${httpMockApi?.response}"
+											type="text"></textarea>
+						<label for="httpResponse" th:text="#{mock.http.table.header.response}">默认响应</label>
+					</div>
+
+					<div class="input-field col s12">
+						<!--<input type="text" id="httpActions" name="action">-->
+						<!--<label for="httpActions" th:text="#{mock.http.table.header.actions}">动作</label>-->
+						<fieldset class="row">
+							<legend th:text="#{mock.http.table.header.actions}">动作</legend>
+							<button class="btn waves-effect waves-teal" name="addAction" th:text="#{mock.http.btn.addActions}">添加动作
+							</button>
+							<div class="row" th:each="action, actionIter : ${httpMockApi?.actions}">
+								<div class="col s6">
+									<textarea class="materialize-textarea" name="actions"
+														th:placeholder="#{mock.http.table.header.actions}"
+														th:text="${action?.toJson()}"></textarea>
+								</div>
+								<div class="col s6">
+									<button class="btn waves-effect waves-red" name="removeAction" th:text="#{mock.http.btn.removeAction}"
+													th:value="${actionIter.index}">删除
+									</button>
+								</div>
+							</div>
+						</fieldset>
+					</div>
+
+					<div class="input-field col s12">
+						<textarea class="materialize-textarea" id="httpDescription" name="description"
+											th:text="${httpMockApi?.description}"
+											type="text"></textarea>
+						<label for="httpDescription" th:text="#{mock.http.table.header.description}">默认响应</label>
+					</div>
+
+				</div>
+
+				<div class="row s12 center">
+					<button class="btn waves-effect waves-light" name="saveApi" th:text="#{mock.btn.submit}">提交</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script layout:fragment="custom_footer_js" type="application/javascript">
+	$(document).ready(function () {
+		$('select').formSelect();
+	});
+</script>
+</body>
+</html>

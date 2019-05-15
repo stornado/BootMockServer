@@ -3,6 +3,7 @@ package com.zxytech.mock.bootmockserver.protocols.http.admin;
 import com.zxytech.mock.bootmockserver.protocols.http.mockapi.HttpMockApiEntity;
 import com.zxytech.mock.bootmockserver.protocols.http.mockapi.HttpMockApiRepository;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
@@ -13,10 +14,18 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/__admin/http")
-@Api(value = "HttpAdminController", description = "HTTP Mock 配置管理接口")
+@Api(
+    value = "HttpAdminController",
+    description = "HTTP Mock 配置管理接口",
+    authorizations = {@Authorization("仲夏叶")})
 public class HttpAdminController {
 
-  @Autowired HttpMockApiRepository apiRepository;
+    HttpMockApiRepository apiRepository;
+
+    @Autowired
+    public HttpAdminController(HttpMockApiRepository apiRepository) {
+        this.apiRepository = apiRepository;
+    }
 
   @GetMapping("/apis")
   public List<HttpMockApiEntity> getHttpMockApis(

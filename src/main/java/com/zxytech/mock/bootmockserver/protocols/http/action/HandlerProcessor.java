@@ -12,6 +12,7 @@ import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.stereotype.Component;
 
+import javax.validation.constraints.NotNull;
 import java.util.Map;
 import java.util.Set;
 
@@ -22,7 +23,7 @@ public class HandlerProcessor implements BeanFactoryPostProcessor {
   private static final String HANDLER_PACKAGE = HandlerProcessor.class.getPackage().getName();
 
   @Override
-  public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory)
+  public void postProcessBeanFactory(@NotNull ConfigurableListableBeanFactory beanFactory)
       throws BeansException {
     ClassPathScanningCandidateComponentProvider provider =
         new ClassPathScanningCandidateComponentProvider(false);
@@ -43,7 +44,7 @@ public class HandlerProcessor implements BeanFactoryPostProcessor {
         logger.error("HandlerProcessor BeanDefinition", e);
       }
     }
-
+      logger.info(handlerMap.keySet().toString());
     HandlerContext handlerContext = new HandlerContext(handlerMap);
     beanFactory.registerSingleton(HandlerContext.class.getName(), handlerContext);
   }

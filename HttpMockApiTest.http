@@ -30,8 +30,8 @@ Content-Type: application/json
   "path": "/mock/demo/http/api",
   "actions": [
     {
-      "type": "forward",
-      "name": "forward",
+      "type": "proxy",
+      "name": "proxy",
       "target": "https://www.baidu.com/abcd"
     }
   ],
@@ -48,8 +48,8 @@ Content-Type: application/json
   "method": "post",
   "actions": [
     {
-      "type": "forward",
-      "name": "forward",
+      "type": "proxy",
+      "name": "proxy",
       "target": "https://www.baidu.com/abcd"
     },
     {
@@ -59,7 +59,8 @@ Content-Type: application/json
     }
   ],
   "contentType": "application/json; charset=utf-8",
-  "response": "{\"l1\":{\"l1_1\":[\"l1_1_1\",\"l1_1_2\"],\"l1_2\":{\"l1_2_1\":121}},\"l2\":{\"l2_1\":null,\"l2_2\":true,\"l2_3\":{}}}"
+  "response": "{\"l1\":{\"l1_1\":[\"l1_1_1\",\"l1_1_2\"],\"l1_2\":{\"l1_2_1\":121}},\"l2\":{\"l2_1\":null,\"l2_2\":true,\"l2_3\":{}}}",
+  "description": ""
 }
 
 ###

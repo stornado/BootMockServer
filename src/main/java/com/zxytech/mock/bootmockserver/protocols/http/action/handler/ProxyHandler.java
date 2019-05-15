@@ -1,9 +1,9 @@
 package com.zxytech.mock.bootmockserver.protocols.http.action.handler;
 
 import com.zxytech.mock.bootmockserver.protocols.http.action.AbstractActionEntity;
-import com.zxytech.mock.bootmockserver.protocols.http.action.ForwardActionEntity;
 import com.zxytech.mock.bootmockserver.protocols.http.action.HttpMockActionHandler;
 import com.zxytech.mock.bootmockserver.protocols.http.action.HttpMockActionType;
+import com.zxytech.mock.bootmockserver.protocols.http.action.ProxyActionEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
@@ -19,13 +19,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
-@HttpMockActionType("forward")
-public class ForwardHandler implements HttpMockActionHandler {
-  private static final Logger logger = LoggerFactory.getLogger(ForwardHandler.class);
+@HttpMockActionType("proxy")
+public class ProxyHandler implements HttpMockActionHandler {
+    private static final Logger logger = LoggerFactory.getLogger(ProxyHandler.class);
 
   RestTemplate restTemplate;
 
-  public ForwardHandler() {
+    public ProxyHandler() {
     this.restTemplate = new RestTemplate();
   }
 
@@ -37,8 +37,8 @@ public class ForwardHandler implements HttpMockActionHandler {
       AbstractActionEntity actionEntity)
       throws Exception {
     String target = null;
-    if (actionEntity instanceof ForwardActionEntity) {
-      target = ((ForwardActionEntity) actionEntity).getTarget();
+      if (actionEntity instanceof ProxyActionEntity) {
+          target = ((ProxyActionEntity) actionEntity).getTarget();
       logger.info("Forward: {}", target);
     }
     if (StringUtils.isEmpty(target)) {

@@ -13,7 +13,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.http.HttpMethod;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -41,10 +40,6 @@ public class HttpMockApiEntity extends AbstractMockEntity {
   @JsonSerialize(using = MediaTypeSerializer.class)
   @ApiModelProperty("Mock 响应 Content-Type")
   ContentTypeEnum contentType;
-
-  @NotEmpty
-  @ApiModelProperty("Mock 默认响应内容")
-  String response;
 
   @Override
   public String toString() {

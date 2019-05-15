@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en"
+			xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+	<meta charset="UTF-8">
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" name="viewport">
+	<title layout:title-pattern="$CONTENT_TITLE - $LAYOUT_TITLE">Boot Mock Server</title>
+	<link href="/css/material-icons.css" media="screen,projection" rel="stylesheet" type="text/css">
+	<link href="/webjars/materializecss/1.0.0/css/materialize.min.css" media="screen,projection" rel="stylesheet"
+				type="text/css">
+</head>
+<body>
+<section layout:fragment="custom_page_header"></section>
+<section layout:fragment="custom_page_content">
+	<P>Page Content</P>
+</section>
+<section layout:fragment="custom_page_footer"></section>
+<script src="/webjars/jquery/3.4.1/jquery.min.js" type="application/javascript"></script>
+<script src="/webjars/materializecss/1.0.0/js/materialize.min.js" type="application/javascript"></script>
+<script layout:fragment="custom_page_js"></script>
+<script layout:fragment="custom_footer_js"></script>
+</body>
+</html>
