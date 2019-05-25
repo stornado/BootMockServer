@@ -3,10 +3,11 @@ package com.zxytech.mock.bootmockserver.protocols.http.mockapi;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.zxytech.mock.bootmockserver.protocols.AbstractMockEntity;
-import com.zxytech.mock.bootmockserver.protocols.http.action.AbstractActionEntity;
+import com.zxytech.mock.bootmockserver.protocols.http.action.domain.AbstractActionEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -19,6 +20,7 @@ import java.util.List;
 @Document("http_mock_apis")
 @Data
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 @ApiModel("HTTP Mock 接口实体")
 public class HttpMockApiEntity extends AbstractMockEntity {
 

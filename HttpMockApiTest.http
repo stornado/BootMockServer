@@ -70,3 +70,73 @@ Content-Type: application/x-www-form-urlencoded
 id=99&content=new-element
 
 ###
+POST http://localhost:8080/__admin/http/api
+Content-Type: application/json
+
+{
+  "path": "/mock/demo/http/api/script/python",
+  "method": "post",
+  "actions": [
+    {
+      "name": "script",
+      "type": "script",
+      "scriptType": "PYTHON",
+      "scriptPath": "72d3fb26-d114-4629-80aa-63ed1392f55c_aaaaaa.py.py"
+    }
+  ],
+  "contentType": "application/xml; charset=utf-8",
+  "response": "<result><data>3333</data><type>python</type></result>",
+  "description": ""
+}
+
+###
+POST http://localhost:8080/mock/demo/http/api/script/python
+Content-Type: application/xml
+
+<req>
+    <data>5555</data>
+    <type>python</type>w
+</req>
+
+###
+POST http://localhost:8080/mock/demo/http/api/script/python?mmm=333&nn=ggg&nn=999
+Content-Type: application/json
+Cookie: kkkk=dfdsfdsfds;ddsss=eee
+
+{
+  "aaa": 3333,
+  "bbbb": "python"
+}
+
+###
+POST http://localhost:8080/mock/demo/http/api/script/python
+Content-Type: application/x-www-form-urlencoded
+
+aaa=3333&bbb=5555&ccc=9999&aaa=2222;bbb=1111
+
+###
+POST http://localhost:8080/__admin/http/script
+Content-Type: multipart/form-data; boundary=----WebkitFormBoundaryABCD
+
+------WebkitFormBoundaryABCD
+Content-Disposition: form-data; name="file"; filename="aaaaaa.py"
+Content-Type: text/x-python-script
+
+< /Users/apple/Downloads/ImportArbitraryDataFromFileToSecureCRTSessions.py
+------WebkitFormBoundaryABCD--
+
+###
+
+
+###
+POST http://localhost:8080/__admin/http/script
+Content-Type: multipart/form-data; boundary=----WebkitFormBoundary1234
+
+------WebkitFormBoundary1234
+Content-Disposition: form-data; name="file", filename="bbbbb.groovy"
+Content-Type: application/octet-stream
+
+< /Users/apple/Downloads/Untitled-2.groovy
+------WebkitFormBoundary1234--
+
+###

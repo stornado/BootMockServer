@@ -1,5 +1,6 @@
 package com.zxytech.mock.bootmockserver.protocols.http.admin;
 
+import com.zxytech.mock.bootmockserver.protocols.http.action.domain.AbstractActionEntity;
 import com.zxytech.mock.bootmockserver.protocols.http.mockapi.HttpMockApiEntity;
 import com.zxytech.mock.bootmockserver.protocols.http.mockapi.HttpMockApiRepository;
 import io.swagger.annotations.Api;
@@ -36,14 +37,13 @@ public class HttpAdminPageController {
     public String httpMockApiListPage(Model model) {
         List<HttpMockApiEntity> apiEntityList =
             apiRepository.findAll(new Sort(Sort.Direction.DESC, "updateTime"));
-        model.addAttribute("httpMockApiList", apiEntityList.subList(0, 10));
+        model.addAttribute("httpMockApiList", apiEntityList);
         return "pages/admin/http/mock_api_list_page.html";
     }
 
     @GetMapping(value = "/api/{id}/page", produces = MediaType.TEXT_HTML_VALUE)
     public String httpMockApiPage(@PathVariable String id, Model model) {
-        model.addAttribute(
-            "apiForm", new HttpMockApiForm(apiRepository.findById(id).orElse(new HttpMockApiEntity())));
+        model.addAttribute("httpMockApi", apiRepository.findById(id).orElse(new HttpMockApiEntity()));
         return "pages/admin/http/mock_api_page.html";
     }
 
@@ -65,11 +65,10 @@ public class HttpAdminPageController {
         value = "/api/{id}/page",
         params = {"saveApi"})
     public String updateOrCreateHttpMockApi(
-        @PathVariable @NotNull String id, @Valid HttpMockApiForm apiForm, BindingResult result) {
+        @PathVariable @NotNull String id, @Valid HttpMockApiEntity apiEntity, BindingResult result) {
         if (result.hasErrors()) {
             logger.error(result.getAllErrors().toString());
         }
-        HttpMockApiEntity apiEntity = apiForm.toHttpMockApiEntity();
         apiEntity.setId(apiRepository.findById(id).orElse(new HttpMockApiEntity()).getId());
         apiEntity.setUpdateTime(System.currentTimeMillis());
 
@@ -80,14 +79,15 @@ public class HttpAdminPageController {
     @PostMapping(
         value = "/api/{id}/page",
         params = {"addAction"})
-    public String addAction(@PathVariable @NotNull String id, HttpMockApiForm apiForm, Model model) {
-        List<String> actions = apiForm.getActions();
-        if (null == actions) {
-            actions = new ArrayList<>(1);
+    public String addAction(
+        @PathVariable @NotNull String id, HttpMockApiEntity apiEntity, Model model) {
+        List<AbstractActionEntity> actionEntities = apiEntity.getActions();
+        if (null == actionEntities) {
+            actionEntities = new ArrayList<>(1);
         }
-        actions.add(null);
-        apiForm.setActions(actions);
-        model.addAttribute("apiForm", apiForm);
+        actionEntities.add(null);
+        apiEntity.setActions(actionEntities);
+        model.addAttribute("httpMockApi", apiEntity);
         return "pages/admin/http/mock_api_page";
     }
 
@@ -95,8 +95,10 @@ public class HttpAdminPageController {
         value = "/api/{id}/page",
         params = {"removeAction"})
     public String removeAction(
-        @PathVariable @NotNull String id, @RequestParam int removeAction, HttpMockApiForm apiForm) {
-        apiForm.getActions().remove(removeAction);
+        @PathVariable @NotNull String id,
+        @RequestParam int removeAction,
+        HttpMockApiEntity apiEntity) {
+        apiEntity.getActions().remove(removeAction);
         return "pages/admin/http/mock_api_page";
     }
 }

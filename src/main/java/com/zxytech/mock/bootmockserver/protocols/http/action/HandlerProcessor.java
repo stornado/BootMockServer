@@ -1,6 +1,7 @@
 package com.zxytech.mock.bootmockserver.protocols.http.action;
 
 import com.google.common.collect.Maps;
+import com.zxytech.mock.bootmockserver.protocols.http.action.domain.HttpMockActionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -31,15 +32,17 @@ public class HandlerProcessor implements BeanFactoryPostProcessor {
     provider.addIncludeFilter(new AnnotationTypeFilter(HttpMockActionType.class));
     provider.addIncludeFilter(new AssignableTypeFilter(HttpMockActionHandler.class));
     Set<BeanDefinition> beanDefinitionSet = provider.findCandidateComponents(HANDLER_PACKAGE);
-    Map<String, HttpMockActionHandler> handlerMap = Maps.newHashMapWithExpectedSize(2);
+      Map<String, HttpMockActionHandler> handlerMap =
+          Maps.newHashMapWithExpectedSize(beanDefinitionSet.size());
 
     for (BeanDefinition beanDefinition : beanDefinitionSet) {
       try {
-        handlerMap.put(
-            Class.forName(beanDefinition.getBeanClassName())
-                .getAnnotation(HttpMockActionType.class)
-                .value(),
-            (HttpMockActionHandler) Class.forName(beanDefinition.getBeanClassName()).newInstance());
+          String className = beanDefinition.getBeanClassName();
+          logger.info(className);
+          Class<?> cls = Class.forName(className);
+          String actionType = cls.getAnnotation(HttpMockActionType.class).value();
+          logger.info(actionType);
+          handlerMap.put(actionType, (HttpMockActionHandler) cls.newInstance());
       } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
         logger.error("HandlerProcessor BeanDefinition", e);
       }

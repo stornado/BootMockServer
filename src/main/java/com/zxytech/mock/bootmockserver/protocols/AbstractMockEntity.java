@@ -9,22 +9,19 @@ import javax.validation.constraints.NotNull;
 
 @Data
 public abstract class AbstractMockEntity {
-  @Id String id;
-
   @NotNull
   @ApiModelProperty("Mock 有效状态(默认true)")
   protected boolean active;
-
   @NotNull
   @ApiModelProperty("接口备注")
   protected String description;
-
     @NotEmpty
     @ApiModelProperty("Mock 默认响应内容")
     protected String response;
-
     protected Long createTime;
     protected Long updateTime;
+    @Id
+    String id;
 
   protected AbstractMockEntity() {
     active = true;

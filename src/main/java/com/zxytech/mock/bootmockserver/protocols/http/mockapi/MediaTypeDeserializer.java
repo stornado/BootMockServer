@@ -1,7 +1,6 @@
 package com.zxytech.mock.bootmockserver.protocols.http.mockapi;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import org.springframework.http.MediaType;
@@ -13,8 +12,7 @@ import java.io.IOException;
 public class MediaTypeDeserializer extends JsonDeserializer<ContentTypeEnum> {
 
   @Override
-  public ContentTypeEnum deserialize(JsonParser p, DeserializationContext ctxt)
-      throws IOException {
+  public ContentTypeEnum deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
     return ContentTypeEnum.valueOf(
         MediaType.parseMediaType(p.getValueAsString()).getSubtype().toUpperCase());
   }

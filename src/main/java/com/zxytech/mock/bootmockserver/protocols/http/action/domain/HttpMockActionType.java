@@ -1,4 +1,4 @@
-package com.zxytech.mock.bootmockserver.protocols.http.action;
+package com.zxytech.mock.bootmockserver.protocols.http.action.domain;
 
 import java.lang.annotation.*;
 

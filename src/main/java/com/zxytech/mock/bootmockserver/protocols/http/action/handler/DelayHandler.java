@@ -1,15 +1,15 @@
 package com.zxytech.mock.bootmockserver.protocols.http.action.handler;
 
-import com.zxytech.mock.bootmockserver.protocols.http.action.AbstractActionEntity;
-import com.zxytech.mock.bootmockserver.protocols.http.action.DelayedActionEntity;
 import com.zxytech.mock.bootmockserver.protocols.http.action.HttpMockActionHandler;
-import com.zxytech.mock.bootmockserver.protocols.http.action.HttpMockActionType;
+import com.zxytech.mock.bootmockserver.protocols.http.action.domain.AbstractActionEntity;
+import com.zxytech.mock.bootmockserver.protocols.http.action.domain.DelayedActionEntity;
+import com.zxytech.mock.bootmockserver.protocols.http.action.domain.HttpMockActionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @HttpMockActionType("delay")
 public class DelayHandler implements HttpMockActionHandler {
@@ -18,8 +18,8 @@ public class DelayHandler implements HttpMockActionHandler {
 
   @Override
   public boolean process(
-      ServletRequest request,
-      ServletResponse response,
+      HttpServletRequest request,
+      HttpServletResponse response,
       FilterChain chain,
       AbstractActionEntity actionEntity)
       throws Exception {

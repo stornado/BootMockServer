@@ -1,8 +1,8 @@
 package com.zxytech.mock.bootmockserver.protocols.http;
 
-import com.zxytech.mock.bootmockserver.protocols.http.action.AbstractActionEntity;
 import com.zxytech.mock.bootmockserver.protocols.http.action.HandlerContext;
 import com.zxytech.mock.bootmockserver.protocols.http.action.HttpMockActionHandler;
+import com.zxytech.mock.bootmockserver.protocols.http.action.domain.AbstractActionEntity;
 import com.zxytech.mock.bootmockserver.protocols.http.mockapi.HttpMockApiEntity;
 import com.zxytech.mock.bootmockserver.protocols.http.mockapi.HttpMockApiRepository;
 import org.slf4j.Logger;
@@ -18,7 +18,7 @@ import java.util.Optional;
 
 @Component
 public class HttpMockFilter implements Filter {
-  public static final Logger logger = LoggerFactory.getLogger(HttpMockFilter.class);
+    private static final Logger logger = LoggerFactory.getLogger(HttpMockFilter.class);
 
   HttpMockApiRepository apiRepository;
   HandlerContext handlerContext;

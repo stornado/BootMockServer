@@ -15,7 +15,7 @@ public class HandlerContext {
   }
 
   public HttpMockActionHandler getInstance(String actionType) {
-    logger.info("input action name: ", actionType);
+      logger.info("input action name: {}", actionType);
     HttpMockActionHandler handler = handlerMap.get(actionType);
     if (handler != null) {
       return handler;
