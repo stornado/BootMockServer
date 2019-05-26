@@ -7,6 +7,7 @@ import com.zxytech.mock.bootmockserver.protocols.http.action.domain.HttpMockActi
 import com.zxytech.mock.bootmockserver.protocols.http.action.domain.ScriptActionEntity;
 import com.zxytech.mock.bootmockserver.protocols.http.action.domain.ScriptTypeEnum;
 import lombok.Data;
+import org.codehaus.groovy.jsr223.GroovyScriptEngineImpl;
 import org.python.core.*;
 import org.python.util.PythonInterpreter;
 import org.slf4j.Logger;
@@ -15,8 +16,8 @@ import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 
 import javax.script.Bindings;
+import javax.script.Invocable;
 import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import javax.servlet.FilterChain;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -36,15 +37,21 @@ public class ScriptHandler implements HttpMockActionHandler {
     public static final String SCRIPT_UPLOAD_DIR = "file:./scripts";
     private static final Logger logger = LoggerFactory.getLogger(ScriptHandler.class);
     private static final String PYTHON_HANDLER_FUNC_NAME = "mock_process";
+    private static final String GROOVY_HANDLER_FUNC_NAME = "mockProcess";
     private static final PythonInterpreter PYTHON_INTERPRETER = new PythonInterpreter();
 
-    private ScriptEngine scriptEngine;
+    private static final ScriptEngine scriptEngine = new GroovyScriptEngineImpl();
 
     private Resource scriptsDir;
 
+    //  static {
+    //    ScriptEngineManager manager = new ScriptEngineManager();
+    //    GroovyScriptEngine()
+    //    scriptEngine = manager.getEngineByExtension(".groovy");
+    //  }
+
     public ScriptHandler() {
-        ScriptEngineManager manager = new ScriptEngineManager();
-        this.scriptEngine = manager.getEngineByExtension(".groovy");
+
         this.scriptsDir = new DefaultResourceLoader().getResource(SCRIPT_UPLOAD_DIR);
     }
 
@@ -94,29 +101,30 @@ public class ScriptHandler implements HttpMockActionHandler {
                 || scriptPath.endsWith(ScriptTypeEnum.PYTHON.getExtension());
             assert Files.exists(scriptPath);
             String script = new String(Files.readAllBytes(scriptPath));
-            Object result;
             switch (scriptType) {
                 case GROOVY:
                     Bindings bindings = scriptEngine.createBindings();
                     bindings.put("servletRequest", request);
                     bindings.put("servletResponse", response);
 
-                    result = scriptEngine.eval(script, bindings);
-                    break;
+                    scriptEngine.eval(script, bindings);
+
+                    Object result =
+                        ((Invocable) scriptEngine)
+                            .invokeFunction(GROOVY_HANDLER_FUNC_NAME, request, response);
+                    logger.info(result.toString());
+                    return true;
 
                 case PYTHON:
-                    result = executePythonScript(script, request);
+                    PyResult pyResult = executePythonScript(script, request);
                     response.setCharacterEncoding("UTF-8");
-                    response.setContentType(((PyResult) result).getContentType());
-                    response.setStatus(((PyResult) result).getStatusCode());
-                    response.getWriter().write(((PyResult) result).getResponse());
+                    response.setContentType(pyResult.getContentType());
+                    response.setStatus(pyResult.getStatusCode());
+                    response.getWriter().write(pyResult.getResponse());
                     return true;
 
                 default:
                     throw new NoSuchMethodError("Only Groovy or Python script is Supported");
-            }
-            if (result != null) {
-                logger.info(result.toString());
             }
         }
         return false;

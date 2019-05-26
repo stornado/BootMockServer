@@ -140,3 +140,29 @@ Content-Type: application/octet-stream
 ------WebkitFormBoundary1234--
 
 ###
+POST http://localhost:8080/__admin/http/api
+Content-Type: application/json
+
+{
+  "path": "/mock/demo/http/api/script/groovy",
+  "method": "post",
+  "actions": [
+    {
+      "name": "script",
+      "type": "script",
+      "scriptType": "GROOVY",
+      "scriptPath": "82a5b300-44ff-4e81-adc2-b187bb6d4ce6_Untitled-2.groovy.groovy"
+    }
+  ],
+  "contentType": "application/xml; charset=utf-8",
+  "response": "<result><data>3333</data><type>python</type></result>",
+  "description": ""
+}
+
+###
+POST http://localhost:8080/mock/demo/http/api/script/groovy
+Content-Type: application/x-www-form-urlencoded
+
+aaa=3333&bbb=5555&ccc=9999&aaa=2222;bbb=1111
+
+###
