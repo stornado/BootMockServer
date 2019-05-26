@@ -111,12 +111,12 @@ public class ScriptHandler implements HttpMockActionHandler {
 
                     Object result =
                         ((Invocable) scriptEngine)
-                            .invokeFunction(GROOVY_HANDLER_FUNC_NAME, request, response);
+                            .invokeFunction(GROOVY_HANDLER_FUNC_NAME, request, response, actionEntity);
                     logger.info(result.toString());
                     return true;
 
                 case PYTHON:
-                    PyResult pyResult = executePythonScript(script, request);
+                    PyResult pyResult = executePythonScript(script, request, actionEntity);
                     response.setCharacterEncoding("UTF-8");
                     response.setContentType(pyResult.getContentType());
                     response.setStatus(pyResult.getStatusCode());
@@ -130,7 +130,8 @@ public class ScriptHandler implements HttpMockActionHandler {
         return false;
     }
 
-    private PyResult executePythonScript(String script, HttpServletRequest request)
+    private PyResult executePythonScript(
+        String script, HttpServletRequest request, AbstractActionEntity actionEntity)
         throws IOException {
         PYTHON_INTERPRETER.exec(script);
         PyFunction mockProcessFunc = PYTHON_INTERPRETER.get(PYTHON_HANDLER_FUNC_NAME, PyFunction.class);

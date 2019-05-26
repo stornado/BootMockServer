@@ -21,7 +21,12 @@ public class ScriptActionEntity extends AbstractActionEntity {
     @Size(min = 4, max = 50)
     String scriptPath;
 
-    @NotNull ScriptTypeEnum scriptType;
+    @ApiModelProperty("脚本类型")
+    @NotNull
+    ScriptTypeEnum scriptType;
+
+    @ApiModelProperty("附加信息")
+    String extraData;
 
     @Override
     public String toString() {
