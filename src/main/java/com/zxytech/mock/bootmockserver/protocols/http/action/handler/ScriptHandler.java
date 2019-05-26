@@ -18,7 +18,6 @@ import javax.script.Bindings;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -49,6 +48,31 @@ public class ScriptHandler implements HttpMockActionHandler {
         this.scriptsDir = new DefaultResourceLoader().getResource(SCRIPT_UPLOAD_DIR);
     }
 
+    public static String installRequirements(String requirementsTxtPath) throws IOException {
+        Path requirementsPath = Paths.get(requirementsTxtPath);
+        Files.exists(requirementsPath);
+        logger.info("requirements.txt: {}", requirementsPath);
+
+        PYTHON_INTERPRETER.exec("import sys\ndef get_sys_path():\n    return sys.path");
+        PyObject result = PYTHON_INTERPRETER.get("get_sys_path", PyFunction.class).__call__();
+        logger.info(result.toString());
+        PyList sysPaths = (PyList) result;
+        String sysPath = sysPaths.get(0).toString();
+        Runtime.getRuntime()
+            .exec(
+                new String[]{
+                    "pip",
+                    "install",
+                    "-index",
+                    "https://pypi.doubanio.com/simple",
+                    "--target",
+                    sysPath,
+                    "--requirement",
+                    requirementsTxtPath
+                });
+        return result.toString();
+    }
+
     @Override
     public boolean process(
         HttpServletRequest request,
@@ -59,7 +83,7 @@ public class ScriptHandler implements HttpMockActionHandler {
         if (actionEntity instanceof ScriptActionEntity) {
             String scriptFilePath = ((ScriptActionEntity) actionEntity).getScriptPath();
             ScriptTypeEnum scriptType = ((ScriptActionEntity) actionEntity).getScriptType();
-
+            logger.info(installRequirements(""));
             logger.info(scriptFilePath);
             Path scriptPath =
                 Paths.get(
@@ -99,7 +123,7 @@ public class ScriptHandler implements HttpMockActionHandler {
     }
 
     private PyResult executePythonScript(String script, HttpServletRequest request)
-        throws IOException, ServletException {
+        throws IOException {
         PYTHON_INTERPRETER.exec(script);
         PyFunction mockProcessFunc = PYTHON_INTERPRETER.get(PYTHON_HANDLER_FUNC_NAME, PyFunction.class);
         PyDictionary pyRequest = new PyDictionary();
@@ -159,7 +183,7 @@ public class ScriptHandler implements HttpMockActionHandler {
             if (inputStream != null) {
                 bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
                 char[] chars = new char[128];
-                int bytesRead = -1;
+                int bytesRead;
                 while ((bytesRead = bufferedReader.read(chars)) > 0) {
                     stringBuilder.append(chars, 0, bytesRead);
                 }

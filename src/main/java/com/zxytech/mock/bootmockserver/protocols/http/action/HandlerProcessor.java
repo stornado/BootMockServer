@@ -39,16 +39,23 @@ public class HandlerProcessor implements BeanFactoryPostProcessor {
       try {
           String className = beanDefinition.getBeanClassName();
           logger.info(className);
+          if (className == null) {
+              continue;
+          }
           Class<?> cls = Class.forName(className);
           String actionType = cls.getAnnotation(HttpMockActionType.class).value();
           logger.info(actionType);
-          handlerMap.put(actionType, (HttpMockActionHandler) cls.newInstance());
+          HttpMockActionHandler actionHandler = (HttpMockActionHandler) cls.newInstance();
+          // 注册bean单例，减少python解释器之类的重复创建
+          beanFactory.registerSingleton(className, actionHandler);
+          handlerMap.put(actionType, actionHandler);
       } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
         logger.error("HandlerProcessor BeanDefinition", e);
       }
     }
       logger.info(handlerMap.keySet().toString());
     HandlerContext handlerContext = new HandlerContext(handlerMap);
+      // 注册bean以备autowire引用
     beanFactory.registerSingleton(HandlerContext.class.getName(), handlerContext);
   }
 }

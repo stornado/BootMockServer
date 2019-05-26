@@ -1,24 +1,38 @@
 package com.zxytech.mock.bootmockserver.protocols.http.admin;
 
 import com.zxytech.mock.bootmockserver.protocols.http.action.domain.AbstractActionEntity;
+import com.zxytech.mock.bootmockserver.protocols.http.action.domain.ScriptTypeEnum;
+import com.zxytech.mock.bootmockserver.protocols.http.action.handler.ScriptHandler;
 import com.zxytech.mock.bootmockserver.protocols.http.mockapi.HttpMockApiEntity;
 import com.zxytech.mock.bootmockserver.protocols.http.mockapi.HttpMockApiRepository;
 import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Nullable;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+
+import static com.zxytech.mock.bootmockserver.protocols.http.action.handler.ScriptHandler.SCRIPT_UPLOAD_DIR;
 
 @Controller
 @RequestMapping("/__admin/http")
@@ -27,10 +41,12 @@ public class HttpAdminPageController {
     private static final Logger logger = LoggerFactory.getLogger(HttpAdminPageController.class);
 
     private HttpMockApiRepository apiRepository;
+    private Resource scriptsDir;
 
     @Autowired
     public HttpAdminPageController(HttpMockApiRepository apiRepository) {
         this.apiRepository = apiRepository;
+        this.scriptsDir = new DefaultResourceLoader().getResource(SCRIPT_UPLOAD_DIR);
     }
 
     @GetMapping(value = "/apis/page", produces = MediaType.TEXT_HTML_VALUE)
@@ -100,5 +116,67 @@ public class HttpAdminPageController {
         HttpMockApiEntity apiEntity) {
         apiEntity.getActions().remove(removeAction);
         return "pages/admin/http/mock_api_page";
+    }
+
+    @PostMapping("/script")
+    public @ResponseBody
+    String uploadScript(@NotNull MultipartFile file) throws IOException {
+        logger.info(
+            "{},{},{},{}",
+            file.getName(),
+            file.getOriginalFilename(),
+            file.getContentType(),
+            file.getSize());
+        return copyFileToScripts(file).getFileName().toString();
+    }
+
+    @PostMapping("/script/python/requirements")
+    public @ResponseBody
+    String installRequirements(@NotNull MultipartFile file) throws IOException {
+        assert file.getContentType() != null
+            && MediaType.valueOf(file.getContentType()).isCompatibleWith(MediaType.TEXT_PLAIN);
+        Path tempFilePath =
+            Paths.get(
+                scriptsDir.getFile().getPath(),
+                "python",
+                String.format("requirements_%s.txt", UUID.randomUUID()));
+        try (InputStream in = file.getInputStream()) {
+            Files.copy(in, tempFilePath);
+        }
+        logger.info("{}\n{}", tempFilePath.getFileName(), new String(Files.readAllBytes(tempFilePath)));
+        return ScriptHandler.installRequirements(tempFilePath.toAbsolutePath().toString());
+    }
+
+    private Path copyFileToScripts(@NotNull MultipartFile file) throws IOException {
+        String scriptType = getScriptType(file).name().toLowerCase();
+        String scriptExtension = getFileExtnsion(file.getOriginalFilename());
+        Path tempFilePath =
+            Paths.get(
+                scriptsDir.getFile().getPath(),
+                scriptType,
+                String.format(
+                    "%s_%s%s", UUID.randomUUID(), file.getOriginalFilename(), scriptExtension));
+        try (InputStream in = file.getInputStream()) {
+            Files.copy(in, tempFilePath);
+        }
+        return tempFilePath;
+    }
+
+    private String getFileExtnsion(@Nullable String name) {
+        return name == null ? "" : name.substring(name.lastIndexOf(".")).toLowerCase();
+    }
+
+    private ScriptTypeEnum getScriptType(@NotNull MultipartFile file) {
+        String contentType = file.getContentType();
+        if (null == contentType) {
+            contentType = "";
+        }
+        if (contentType.startsWith("text") && contentType.contains("python")) {
+            return ScriptTypeEnum.PYTHON;
+        } else if (getFileExtnsion(file.getOriginalFilename())
+            .equalsIgnoreCase(ScriptTypeEnum.GROOVY.getExtension())) {
+            return ScriptTypeEnum.GROOVY;
+        }
+        throw new NoSuchMethodError("Only Groovy or Python script is Supported");
     }
 }
