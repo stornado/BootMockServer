@@ -39,16 +39,8 @@ public class ScriptHandler implements HttpMockActionHandler {
     private static final String PYTHON_HANDLER_FUNC_NAME = "mock_process";
     private static final String GROOVY_HANDLER_FUNC_NAME = "mockProcess";
     private static final PythonInterpreter PYTHON_INTERPRETER = new PythonInterpreter();
-
-    private static final ScriptEngine scriptEngine = new GroovyScriptEngineImpl();
-
+    private static final ScriptEngine GROOVY_SCRIPT_ENGINE = new GroovyScriptEngineImpl();
     private Resource scriptsDir;
-
-    //  static {
-    //    ScriptEngineManager manager = new ScriptEngineManager();
-    //    GroovyScriptEngine()
-    //    scriptEngine = manager.getEngineByExtension(".groovy");
-    //  }
 
     public ScriptHandler() {
 
@@ -103,14 +95,14 @@ public class ScriptHandler implements HttpMockActionHandler {
             String script = new String(Files.readAllBytes(scriptPath));
             switch (scriptType) {
                 case GROOVY:
-                    Bindings bindings = scriptEngine.createBindings();
+                    Bindings bindings = GROOVY_SCRIPT_ENGINE.createBindings();
                     bindings.put("servletRequest", request);
                     bindings.put("servletResponse", response);
 
-                    scriptEngine.eval(script, bindings);
+                    GROOVY_SCRIPT_ENGINE.eval(script, bindings);
 
                     Object result =
-                        ((Invocable) scriptEngine)
+                        ((Invocable) GROOVY_SCRIPT_ENGINE)
                             .invokeFunction(GROOVY_HANDLER_FUNC_NAME, request, response, actionEntity);
                     logger.info(result.toString());
                     return true;
