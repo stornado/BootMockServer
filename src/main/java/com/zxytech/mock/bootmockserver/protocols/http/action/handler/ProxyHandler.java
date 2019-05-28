@@ -2,11 +2,12 @@ package com.zxytech.mock.bootmockserver.protocols.http.action.handler;
 
 import com.zxytech.mock.bootmockserver.protocols.http.action.HttpMockActionHandler;
 import com.zxytech.mock.bootmockserver.protocols.http.action.domain.AbstractActionEntity;
-import com.zxytech.mock.bootmockserver.protocols.http.action.domain.HttpMockActionType;
 import com.zxytech.mock.bootmockserver.protocols.http.action.domain.ProxyActionEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
@@ -17,14 +18,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
-@HttpMockActionType("proxy")
+@Component("proxy")
 public class ProxyHandler implements HttpMockActionHandler {
     private static final Logger logger = LoggerFactory.getLogger(ProxyHandler.class);
 
     private RestTemplate restTemplate;
 
-    public ProxyHandler() {
-    this.restTemplate = new RestTemplate();
+    @Autowired
+    public ProxyHandler(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
   }
 
   @Override

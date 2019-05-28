@@ -1,12 +1,12 @@
 package com.zxytech.mock.bootmockserver.protocols.http;
 
-import com.zxytech.mock.bootmockserver.protocols.http.action.HandlerContext;
 import com.zxytech.mock.bootmockserver.protocols.http.action.HttpMockActionHandler;
 import com.zxytech.mock.bootmockserver.protocols.http.action.domain.AbstractActionEntity;
 import com.zxytech.mock.bootmockserver.protocols.http.mockapi.HttpMockApiEntity;
 import com.zxytech.mock.bootmockserver.protocols.http.mockapi.HttpMockApiRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,12 +21,12 @@ public class HttpMockFilter implements Filter {
     private static final Logger logger = LoggerFactory.getLogger(HttpMockFilter.class);
 
   HttpMockApiRepository apiRepository;
-  HandlerContext handlerContext;
+    BeanFactory beanFactory;
 
   @Autowired
-  public HttpMockFilter(HttpMockApiRepository apiRepository, HandlerContext handlerContext) {
+  public HttpMockFilter(HttpMockApiRepository apiRepository, BeanFactory beanFactory) {
     this.apiRepository = apiRepository;
-    this.handlerContext = handlerContext;
+      this.beanFactory = beanFactory;
   }
 
   @Override
@@ -49,7 +49,8 @@ public class HttpMockFilter implements Filter {
       try {
         boolean terminal;
         for (AbstractActionEntity actionEntity : apiEntity.getActions()) {
-          HttpMockActionHandler actionHandler = handlerContext.getInstance(actionEntity.getName());
+            HttpMockActionHandler actionHandler =
+                beanFactory.getBean(actionEntity.getName(), HttpMockActionHandler.class);
           terminal = actionHandler.process(request, response, chain, actionEntity);
           if (terminal) {
             return;

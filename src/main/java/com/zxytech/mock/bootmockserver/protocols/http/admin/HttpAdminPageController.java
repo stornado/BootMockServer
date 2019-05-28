@@ -1,5 +1,6 @@
 package com.zxytech.mock.bootmockserver.protocols.http.admin;
 
+import com.zxytech.mock.bootmockserver.config.HttpHandlerProperties;
 import com.zxytech.mock.bootmockserver.protocols.http.action.domain.AbstractActionEntity;
 import com.zxytech.mock.bootmockserver.protocols.http.action.domain.ScriptTypeEnum;
 import com.zxytech.mock.bootmockserver.protocols.http.action.handler.ScriptHandler;
@@ -9,7 +10,6 @@ import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
@@ -32,8 +32,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.zxytech.mock.bootmockserver.protocols.http.action.handler.ScriptHandler.SCRIPT_UPLOAD_DIR;
-
 @Controller
 @RequestMapping("/__admin/http")
 @Api(value = "HttpAdminPageController", description = "HTTP Mock 管理页面", hidden = true)
@@ -42,11 +40,16 @@ public class HttpAdminPageController {
 
     private HttpMockApiRepository apiRepository;
     private Resource scriptsDir;
+    private ScriptHandler scriptHandler;
 
     @Autowired
-    public HttpAdminPageController(HttpMockApiRepository apiRepository) {
+    public HttpAdminPageController(
+        HttpMockApiRepository apiRepository,
+        HttpHandlerProperties handlerProperties,
+        ScriptHandler scriptHandler) {
         this.apiRepository = apiRepository;
-        this.scriptsDir = new DefaultResourceLoader().getResource(SCRIPT_UPLOAD_DIR);
+        this.scriptsDir = handlerProperties.getScriptUploadPath();
+        this.scriptHandler = scriptHandler;
     }
 
     @GetMapping(value = "/apis/page", produces = MediaType.TEXT_HTML_VALUE)
@@ -144,7 +147,7 @@ public class HttpAdminPageController {
             Files.copy(in, tempFilePath);
         }
         logger.info("{}\n{}", tempFilePath.getFileName(), new String(Files.readAllBytes(tempFilePath)));
-        return ScriptHandler.installRequirements(tempFilePath.toAbsolutePath().toString());
+        return scriptHandler.installRequirements(tempFilePath.toAbsolutePath().toString());
     }
 
     private Path copyFileToScripts(@NotNull MultipartFile file) throws IOException {

@@ -1,19 +1,19 @@
 package com.zxytech.mock.bootmockserver.protocols.http.action.handler;
 
 import com.google.gson.Gson;
+import com.zxytech.mock.bootmockserver.config.HttpHandlerProperties;
 import com.zxytech.mock.bootmockserver.protocols.http.action.HttpMockActionHandler;
 import com.zxytech.mock.bootmockserver.protocols.http.action.domain.AbstractActionEntity;
-import com.zxytech.mock.bootmockserver.protocols.http.action.domain.HttpMockActionType;
 import com.zxytech.mock.bootmockserver.protocols.http.action.domain.ScriptActionEntity;
 import com.zxytech.mock.bootmockserver.protocols.http.action.domain.ScriptTypeEnum;
 import lombok.Data;
-import org.codehaus.groovy.jsr223.GroovyScriptEngineImpl;
 import org.python.core.*;
 import org.python.util.PythonInterpreter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Component;
 
 import javax.script.Bindings;
 import javax.script.Invocable;
@@ -32,28 +32,33 @@ import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.Map;
 
-@HttpMockActionType("script")
+@Component("script")
 public class ScriptHandler implements HttpMockActionHandler {
-    public static final String SCRIPT_UPLOAD_DIR = "file:./scripts";
     private static final Logger logger = LoggerFactory.getLogger(ScriptHandler.class);
     private static final String PYTHON_HANDLER_FUNC_NAME = "mock_process";
     private static final String GROOVY_HANDLER_FUNC_NAME = "mockProcess";
-    private static final PythonInterpreter PYTHON_INTERPRETER = new PythonInterpreter();
-    private static final ScriptEngine GROOVY_SCRIPT_ENGINE = new GroovyScriptEngineImpl();
-    private Resource scriptsDir;
 
-    public ScriptHandler() {
+    private ScriptEngine groovyScriptEngine;
+    private PythonInterpreter pythonInterpreter;
+    private Resource scriptUploadDir;
 
-        this.scriptsDir = new DefaultResourceLoader().getResource(SCRIPT_UPLOAD_DIR);
+    @Autowired
+    public ScriptHandler(
+        ScriptEngine groovyScriptEngine,
+        PythonInterpreter pythonInterpreter,
+        HttpHandlerProperties handlerProperties) {
+        this.groovyScriptEngine = groovyScriptEngine;
+        this.pythonInterpreter = pythonInterpreter;
+        this.scriptUploadDir = handlerProperties.getScriptUploadPath();
     }
 
-    public static String installRequirements(String requirementsTxtPath) throws IOException {
+    public String installRequirements(String requirementsTxtPath) throws IOException {
         Path requirementsPath = Paths.get(requirementsTxtPath);
         Files.exists(requirementsPath);
         logger.info("requirements.txt: {}", requirementsPath);
 
-        PYTHON_INTERPRETER.exec("import sys\ndef get_sys_path():\n    return sys.path");
-        PyObject result = PYTHON_INTERPRETER.get("get_sys_path", PyFunction.class).__call__();
+        pythonInterpreter.exec("import sys\ndef get_sys_path():\n    return sys.path");
+        PyObject result = pythonInterpreter.get("get_sys_path", PyFunction.class).__call__();
         logger.info(result.toString());
         PyList sysPaths = (PyList) result;
         String sysPath = sysPaths.get(0).toString();
@@ -86,7 +91,7 @@ public class ScriptHandler implements HttpMockActionHandler {
             logger.info(scriptFilePath);
             Path scriptPath =
                 Paths.get(
-                    scriptsDir.getFile().getAbsolutePath(),
+                    scriptUploadDir.getFile().getAbsolutePath(),
                     scriptType.name().toLowerCase(),
                     scriptFilePath);
             assert scriptPath.endsWith(ScriptTypeEnum.GROOVY.getExtension())
@@ -95,14 +100,14 @@ public class ScriptHandler implements HttpMockActionHandler {
             String script = new String(Files.readAllBytes(scriptPath));
             switch (scriptType) {
                 case GROOVY:
-                    Bindings bindings = GROOVY_SCRIPT_ENGINE.createBindings();
+                    Bindings bindings = groovyScriptEngine.createBindings();
                     bindings.put("servletRequest", request);
                     bindings.put("servletResponse", response);
 
-                    GROOVY_SCRIPT_ENGINE.eval(script, bindings);
+                    groovyScriptEngine.eval(script, bindings);
 
                     Object result =
-                        ((Invocable) GROOVY_SCRIPT_ENGINE)
+                        ((Invocable) groovyScriptEngine)
                             .invokeFunction(GROOVY_HANDLER_FUNC_NAME, request, response, actionEntity);
                     logger.info(result.toString());
                     return true;
@@ -125,8 +130,8 @@ public class ScriptHandler implements HttpMockActionHandler {
     private PyResult executePythonScript(
         String script, HttpServletRequest request, AbstractActionEntity actionEntity)
         throws IOException {
-        PYTHON_INTERPRETER.exec(script);
-        PyFunction mockProcessFunc = PYTHON_INTERPRETER.get(PYTHON_HANDLER_FUNC_NAME, PyFunction.class);
+        pythonInterpreter.exec(script);
+        PyFunction mockProcessFunc = pythonInterpreter.get(PYTHON_HANDLER_FUNC_NAME, PyFunction.class);
         PyDictionary pyRequest = new PyDictionary();
 
         pyRequest.put("method", request.getMethod());

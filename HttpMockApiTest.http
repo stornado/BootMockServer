@@ -95,7 +95,7 @@ Content-Type: application/xml
 
 <req>
     <data>5555</data>
-    <type>python</type>w
+    <type>python</type>
 </req>
 
 ###
