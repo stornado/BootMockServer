@@ -15,30 +15,30 @@ import javax.validation.constraints.Size;
 @EqualsAndHashCode(callSuper = false)
 @ApiModel("执行脚本")
 public class ScriptActionEntity extends AbstractActionEntity {
-    @ApiModelProperty("脚本路径")
-    @NotNull
-    @NotBlank
-    @Size(min = 4, max = 50)
-    String scriptPath;
+  @ApiModelProperty("脚本路径")
+  @NotNull
+  @NotBlank
+  @Size(min = 4, max = 50)
+  String scriptPath;
 
-    @ApiModelProperty("脚本类型")
-    @NotNull
-    ScriptTypeEnum scriptType;
+  @ApiModelProperty("脚本类型")
+  @NotNull
+  ScriptTypeEnum scriptType;
 
-    @ApiModelProperty("附加信息")
-    String extraData;
+  @ApiModelProperty("附加信息")
+  String extraData;
 
-    @Override
-    public String toString() {
-        return "ScriptActionEntity{"
-            + "scriptFilePath='"
-            + scriptPath
-            + '\''
-            + ", scriptType="
-            + scriptType
-            + ", name='"
-            + name
-            + '\''
-            + '}';
-    }
+  @Override
+  public String toString() {
+    return "ScriptActionEntity{"
+      + "scriptFilePath='"
+      + scriptPath
+      + '\''
+      + ", scriptType="
+      + scriptType
+      + ", name='"
+      + name
+      + '\''
+      + '}';
+  }
 }

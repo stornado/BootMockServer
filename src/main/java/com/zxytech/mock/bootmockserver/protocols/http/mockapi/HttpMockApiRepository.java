@@ -9,6 +9,6 @@ import java.util.Optional;
 @Repository
 public interface HttpMockApiRepository extends MongoRepository<HttpMockApiEntity, String> {
 
-  Optional<HttpMockApiEntity> findFirstByPathAndMethod(
+  Optional<HttpMockApiEntity> findFirstByPathAndMethodAndActiveIsTrueOrderByUpdateTime(
       @NotNull String path, @NotNull String method);
 }

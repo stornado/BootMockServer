@@ -15,14 +15,14 @@ import javax.validation.constraints.Size;
 @EqualsAndHashCode(callSuper = false)
 @ApiModel("代理")
 public class ProxyActionEntity extends AbstractActionEntity {
-    @ApiModelProperty("目标URL")
-    @NotBlank
-    @NotNull
-    @Size(min = 10, max = 255)
+  @ApiModelProperty("目标URL")
+  @NotBlank
+  @NotNull
+  @Size(min = 10, max = 255)
   String target;
 
   @Override
   public String toString() {
-      return "ProxyActionEntity{" + "target='" + target + '\'' + ", name='" + name + '\'' + '}';
+    return "ProxyActionEntity{" + "target='" + target + '\'' + ", name='" + name + '\'' + '}';
   }
 }

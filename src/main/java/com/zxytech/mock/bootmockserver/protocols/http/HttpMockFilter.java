@@ -18,27 +18,26 @@ import java.util.Optional;
 
 @Component
 public class HttpMockFilter implements Filter {
-    private static final Logger logger = LoggerFactory.getLogger(HttpMockFilter.class);
+  private static final Logger logger = LoggerFactory.getLogger(HttpMockFilter.class);
 
   HttpMockApiRepository apiRepository;
-    BeanFactory beanFactory;
+  BeanFactory beanFactory;
 
   @Autowired
   public HttpMockFilter(HttpMockApiRepository apiRepository, BeanFactory beanFactory) {
     this.apiRepository = apiRepository;
-      this.beanFactory = beanFactory;
+    this.beanFactory = beanFactory;
   }
 
   @Override
-  public void doFilter(
-      ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain)
+  public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain)
       throws IOException, ServletException {
     HttpServletRequest request = (HttpServletRequest) servletRequest;
     HttpServletResponse response = (HttpServletResponse) servletResponse;
     response.setHeader("X-Mock-Server", "Boot Mock Server");
 
-    Optional<HttpMockApiEntity> apiEntityOptional =
-        apiRepository.findFirstByPathAndMethod(request.getRequestURI(), request.getMethod());
+    Optional<HttpMockApiEntity> apiEntityOptional = apiRepository
+      .findFirstByPathAndMethodAndActiveIsTrueOrderByUpdateTime(request.getRequestURI(), request.getMethod());
 
     if (apiEntityOptional.isPresent()) {
       HttpMockApiEntity apiEntity = apiEntityOptional.get();
@@ -49,8 +48,8 @@ public class HttpMockFilter implements Filter {
       try {
         boolean terminal;
         for (AbstractActionEntity actionEntity : apiEntity.getActions()) {
-            HttpMockActionHandler actionHandler =
-                beanFactory.getBean(actionEntity.getName(), HttpMockActionHandler.class);
+          HttpMockActionHandler actionHandler = beanFactory.getBean(actionEntity.getName(),
+            HttpMockActionHandler.class);
           terminal = actionHandler.process(request, response, chain, actionEntity);
           if (terminal) {
             return;

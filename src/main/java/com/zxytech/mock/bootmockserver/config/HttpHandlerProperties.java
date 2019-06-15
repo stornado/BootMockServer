@@ -15,20 +15,20 @@ import javax.script.ScriptEngine;
 @ConfigurationProperties(prefix = "mock.http.handler")
 @Data
 public class HttpHandlerProperties {
-    private Resource scriptUploadPath;
+  private Resource scriptUploadPath;
 
-    @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
-    }
+  @Bean
+  public RestTemplate restTemplate() {
+    return new RestTemplate();
+  }
 
-    @Bean
-    public ScriptEngine groovyScriptEngine() {
-        return new GroovyScriptEngineImpl();
-    }
+  @Bean
+  public ScriptEngine groovyScriptEngine() {
+    return new GroovyScriptEngineImpl();
+  }
 
-    @Bean
-    public PythonInterpreter pythonInterpreter() {
-        return new PythonInterpreter();
-    }
+  @Bean
+  public PythonInterpreter pythonInterpreter() {
+    return new PythonInterpreter();
+  }
 }

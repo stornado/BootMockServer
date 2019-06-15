@@ -21,14 +21,14 @@ import java.util.Optional;
     description = "HTTP Mock 配置管理接口",
     authorizations = {@Authorization("仲夏叶")})
 public class HttpAdminController {
-    private static final Logger logger = LoggerFactory.getLogger(HttpAdminController.class);
+  private static final Logger logger = LoggerFactory.getLogger(HttpAdminController.class);
 
-    private HttpMockApiRepository apiRepository;
+  private HttpMockApiRepository apiRepository;
 
-    @Autowired
-    public HttpAdminController(HttpMockApiRepository apiRepository) {
-        this.apiRepository = apiRepository;
-    }
+  @Autowired
+  public HttpAdminController(HttpMockApiRepository apiRepository) {
+    this.apiRepository = apiRepository;
+  }
 
   @GetMapping("/apis")
   public List<HttpMockApiEntity> getHttpMockApis(

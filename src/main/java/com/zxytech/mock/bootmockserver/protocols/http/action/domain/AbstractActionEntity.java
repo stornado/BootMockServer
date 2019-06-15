@@ -14,15 +14,15 @@ import javax.validation.constraints.NotNull;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
   @JsonSubTypes.Type(value = DelayedActionEntity.class, name = "delay"),
-    @JsonSubTypes.Type(value = ProxyActionEntity.class, name = "proxy"),
-    @JsonSubTypes.Type(value = ScriptActionEntity.class, name = "script")
+  @JsonSubTypes.Type(value = ProxyActionEntity.class, name = "proxy"),
+  @JsonSubTypes.Type(value = ScriptActionEntity.class, name = "script")
 })
 public abstract class AbstractActionEntity {
   @ApiModelProperty("动作名称")
   @NotNull
   protected String name;
 
-    public String toJson() {
-        return new Gson().toJson(this);
-    }
+  public String toJson() {
+    return new Gson().toJson(this);
+  }
 }

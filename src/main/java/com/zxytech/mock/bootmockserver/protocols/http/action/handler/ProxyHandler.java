@@ -20,13 +20,13 @@ import java.util.Map;
 
 @Component("proxy")
 public class ProxyHandler implements HttpMockActionHandler {
-    private static final Logger logger = LoggerFactory.getLogger(ProxyHandler.class);
+  private static final Logger logger = LoggerFactory.getLogger(ProxyHandler.class);
 
-    private RestTemplate restTemplate;
+  private RestTemplate restTemplate;
 
-    @Autowired
-    public ProxyHandler(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
+  @Autowired
+  public ProxyHandler(RestTemplate restTemplate) {
+    this.restTemplate = restTemplate;
   }
 
   @Override
@@ -37,8 +37,8 @@ public class ProxyHandler implements HttpMockActionHandler {
       AbstractActionEntity actionEntity)
       throws Exception {
     String target = null;
-      if (actionEntity instanceof ProxyActionEntity) {
-          target = ((ProxyActionEntity) actionEntity).getTarget();
+    if (actionEntity instanceof ProxyActionEntity) {
+      target = ((ProxyActionEntity) actionEntity).getTarget();
       logger.info("Forward: {}", target);
     }
     if (StringUtils.isEmpty(target)) {
