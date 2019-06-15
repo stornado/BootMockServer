@@ -30,14 +30,16 @@ public class HttpMockFilter implements Filter {
   }
 
   @Override
-  public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain)
+  public void doFilter(
+    ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain)
       throws IOException, ServletException {
     HttpServletRequest request = (HttpServletRequest) servletRequest;
     HttpServletResponse response = (HttpServletResponse) servletResponse;
     response.setHeader("X-Mock-Server", "Boot Mock Server");
 
-    Optional<HttpMockApiEntity> apiEntityOptional = apiRepository
-      .findFirstByPathAndMethodAndActiveIsTrueOrderByUpdateTime(request.getRequestURI(), request.getMethod());
+    Optional<HttpMockApiEntity> apiEntityOptional =
+      apiRepository.findFirstByPathAndMethodAndActiveIsTrueOrderByUpdateTime(
+        request.getRequestURI(), request.getMethod());
 
     if (apiEntityOptional.isPresent()) {
       HttpMockApiEntity apiEntity = apiEntityOptional.get();
@@ -48,8 +50,8 @@ public class HttpMockFilter implements Filter {
       try {
         boolean terminal;
         for (AbstractActionEntity actionEntity : apiEntity.getActions()) {
-          HttpMockActionHandler actionHandler = beanFactory.getBean(actionEntity.getName(),
-            HttpMockActionHandler.class);
+          HttpMockActionHandler actionHandler =
+            beanFactory.getBean(actionEntity.getName(), HttpMockActionHandler.class);
           terminal = actionHandler.process(request, response, chain, actionEntity);
           if (terminal) {
             return;

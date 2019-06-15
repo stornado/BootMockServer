@@ -87,7 +87,6 @@ public class ScriptHandler implements HttpMockActionHandler {
     if (actionEntity instanceof ScriptActionEntity) {
       String scriptFilePath = ((ScriptActionEntity) actionEntity).getScriptPath();
       ScriptTypeEnum scriptType = ((ScriptActionEntity) actionEntity).getScriptType();
-      logger.info(installRequirements(""));
       logger.info(scriptFilePath);
       Path scriptPath =
         Paths.get(
