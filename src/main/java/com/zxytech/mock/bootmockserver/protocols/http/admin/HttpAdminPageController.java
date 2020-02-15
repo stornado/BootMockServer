@@ -55,7 +55,7 @@ public class HttpAdminPageController {
   @GetMapping(value = "/apis/page", produces = MediaType.TEXT_HTML_VALUE)
   public String httpMockApiListPage(Model model) {
     List<HttpMockApiEntity> apiEntityList =
-      apiRepository.findAll(new Sort(Sort.Direction.DESC, "updateTime"));
+      apiRepository.findAll(Sort.by(Sort.Direction.DESC, "updateTime"));
     model.addAttribute("httpMockApiList", apiEntityList);
     return "pages/admin/http/mock_api_list_page.html";
   }

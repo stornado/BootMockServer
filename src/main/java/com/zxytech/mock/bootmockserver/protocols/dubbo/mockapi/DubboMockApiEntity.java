@@ -4,6 +4,7 @@ import com.zxytech.mock.bootmockserver.protocols.AbstractMockEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -11,6 +12,7 @@ import javax.validation.constraints.NotBlank;
 
 @Document("dubbo_mock_apis")
 @Data
+@EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @ApiModel("Dubbo Mock 接口实体")
 public class DubboMockApiEntity extends AbstractMockEntity {

@@ -19,7 +19,7 @@ public class DubboAdminController {
 
   @GetMapping("/services")
   public List<DubboMockApiEntity> getDubboMockApis() {
-    return apiRepository.findAll(new Sort(Sort.Direction.DESC, "updateTime"));
+    return apiRepository.findAll(Sort.by(Sort.Direction.DESC, "updateTime"));
   }
 
   @GetMapping("/service/{id}")

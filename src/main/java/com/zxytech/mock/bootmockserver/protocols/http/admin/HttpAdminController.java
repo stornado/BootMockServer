@@ -33,7 +33,7 @@ public class HttpAdminController {
   @GetMapping("/apis")
   public List<HttpMockApiEntity> getHttpMockApis(
       @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int limit) {
-    return apiRepository.findAll(new Sort(Sort.Direction.DESC, "updateTime"));
+    return apiRepository.findAll(Sort.by(Sort.Direction.DESC, "updateTime"));
   }
 
   @GetMapping("/api/{id}")
